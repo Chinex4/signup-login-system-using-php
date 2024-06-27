@@ -68,10 +68,10 @@ function userAlreadyExists($db_connection, $username, $email)
 
     $row = mysqli_fetch_assoc($retrieved_data);
 
+    mysqli_stmt_close($stmt);
     if ($row) {
         return $row;
-    }
-    else{
+    } else {
         $result = false;
         return $result;
     }
@@ -92,6 +92,47 @@ function createUser($db_connection, $fullname, $email, $username, $pwd)
     // Executing statement
     mysqli_stmt_execute($stmt);
 
-    header("location: ../login.php");
+    mysqli_stmt_close($stmt);
+
+    header("location: ../login.php?error=none");
     exit();
+}
+
+
+// LOGIN FUNCTIONS
+
+function emptyLoginInput($username, $pwd)
+{
+    $result = "";
+    if (empty($username) || empty($pwd)) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+
+function loginUser($connection, $username, $pwd)
+{
+    $getUser = userAlreadyExists($connection, $username, $username);
+    if (!$getUser) {
+        header("location: ../login.php?error=wrong_input");
+        exit();
+    }
+    $checkPassword = password_verify($pwd, $getUser["pwd"]);
+
+    if(!$checkPassword){
+        header("location: ../login.php?error=wrong_password");
+        exit();
+    }
+    else{
+        session_start();
+
+        $_SESSION["username"] = $getUser["username"];
+        $_SESSION["fullname"] = $getUser["fullname"];
+        $_SESSION["email"] = $getUser["email"];
+
+        header("location: ../index.php");
+        exit();
+    }
 }
