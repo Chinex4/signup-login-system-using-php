@@ -128,6 +128,7 @@ function loginUser($connection, $username, $pwd)
     else{
         session_start();
 
+        $_SESSION["id"] = $getUser["id"];
         $_SESSION["username"] = $getUser["username"];
         $_SESSION["fullname"] = $getUser["fullname"];
         $_SESSION["email"] = $getUser["email"];
