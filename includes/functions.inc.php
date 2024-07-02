@@ -132,8 +132,51 @@ function loginUser($connection, $username, $pwd)
         $_SESSION["username"] = $getUser["username"];
         $_SESSION["fullname"] = $getUser["fullname"];
         $_SESSION["email"] = $getUser["email"];
+        $_SESSION["phone"] = $getUser["phone_number"];
+        $_SESSION["gender"] = $getUser["gender"];
+        $_SESSION["dob"] = $getUser["dob"];
+        $_SESSION["profile-pic"] = $getUser["profile_picture"];
+
 
         header("location: ../index.php");
+        exit();
+    }
+}
+
+function updateProfile($db_connection, $fileActualExt, $allowed, $fileError, $fileSize, $userid, $fileTmpName, $username, $gender, $phone, $dob){
+
+    if (in_array($fileActualExt, $allowed)) {
+        if ($fileError === 0) {
+            if ($fileSize < 5_000_000) { // 5MB limit
+                $fileNameNew = "profile" . $userid . "." . $fileActualExt;
+                $fileDestination = '../uploads/' . $fileNameNew;
+
+                // Move the uploaded file
+                move_uploaded_file($fileTmpName, $fileDestination);
+
+                // Update database
+                $sql = "UPDATE users SET profile_picture = ?, username = ?, gender = ?, phone_number = ?, dob = ?  WHERE id = ?";
+                $stmt = mysqli_stmt_init($db_connection);
+
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("location: ../update-profile.php?error=stmt_failed");
+                    exit();
+                } else {
+                    mysqli_stmt_bind_param($stmt, "sssisi", $fileNameNew, $username, $gender, $phone, $dob, $userid);
+                    mysqli_stmt_execute($stmt);
+                    mysqli_stmt_close($stmt);
+                    header("location: ../profile.php?error=upload-success");
+                }
+            } else {
+                header("location: ../update-profile.php?error=file_too_large");
+                exit();
+            }
+        } else {
+            header("location: ../update-profile.php?error=upload_error");
+            exit();
+        }
+    } else {
+        header("location: ../update-profile.php?error=invalid_file_type");
         exit();
     }
 }
