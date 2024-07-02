@@ -26,13 +26,23 @@ function getProfilePicture($userid, $db_connection)
         }
     }
 }
-$picture = getProfilePicture($userid, $db_connection)
+$picture = getProfilePicture($userid, $db_connection);
 ?>
 
 <section>
     <div class="container">
         <div class="row">
             <div class="col-lg-6 mx-auto">
+                <?php
+                if (isset($_GET["error"])) {
+                    if ($_GET["error"] === "none") {
+                        echo '<div style="width: 300px;" class="alert alert-success alert-dismissible fade show mx-auto" role="alert">
+                        <strong>Profile Updated Successfully!</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
+                    }
+                }
+                ?>
                 <h1 class="display-5 text-center">Profile</h1>
                 <div style="width: 200px; height: 200px;"
                     class="rounded-circle mt-3 w-5 mx-auto">

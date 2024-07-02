@@ -21,6 +21,7 @@ if (isset($_POST['upload'])) {
     $fileActualExt = strtolower(end($fileExt));
 
     $allowed = array('jpg', 'png', 'jpeg', 'webp');
+    
 
     updateProfile($db_connection, $fileActualExt, $allowed, $fileError, $fileSize, $userid, $fileTmpName, $username, $gender, $phone, $dob);
 

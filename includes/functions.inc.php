@@ -165,7 +165,7 @@ function updateProfile($db_connection, $fileActualExt, $allowed, $fileError, $fi
                     mysqli_stmt_bind_param($stmt, "sssisi", $fileNameNew, $username, $gender, $phone, $dob, $userid);
                     mysqli_stmt_execute($stmt);
                     mysqli_stmt_close($stmt);
-                    header("location: ../profile.php?error=upload-success");
+                    header("location: ../profile.php?error=none");
                 }
             } else {
                 header("location: ../update-profile.php?error=file_too_large");
